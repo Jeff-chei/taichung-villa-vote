@@ -95,6 +95,14 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
+    // Paste the deployed Google Apps Script /exec URL here to enable shared votes.
+    const VOTE_API_URL = '';
+    const clientIdKey = 'taichung-villa-voter-id-v1';
+    const clientId = localStorage.getItem(clientIdKey) || (crypto.randomUUID ? crypto.randomUUID() : `voter-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    localStorage.setItem(clientIdKey, clientId);
+    const sharedVotingEnabled = Boolean(VOTE_API_URL);
+    let remoteTotals = {};
+
     const villas = [
       { id:'starry-night', name:'大雪星空 Starry Night', area:'東勢', capacity:'10–18 人／5 房', newYear:'$36,000／棟（10–18 人同價）', perPerson:'12 人約 $3,000／人', facilities:['KTV','麻將桌','獨立烤肉區','室內＋戶外廚房','甕仔雞桶','桌遊'], note:'配備完整，12 人不必加人費；適合想認真烤肉、下廚的團。', fit:'12 人剛好', url:'https://www.starrynightoutdoor.com/inn', label:'官方介紹' },
       { id:'natural-life', name:'漫漫石山 Natural Life', area:'東勢', capacity:'14 人／3 房（4＋4＋6）', newYear:'需向業者確認', perPerson:'一般平日 $12,000 起；假日 $16,000', facilities:['行動 KTV','電動麻將桌','露天烤肉區','開放式廚房','夏季戲水池'], note:'一次只接一組；若跨年報價合理，可能是預算優先的選項。', fit:'預算待確認', url:'https://www.natural-life.com.tw/', label:'官方網站' },
@@ -126,13 +134,52 @@
     function renderComparison() {
       comparison.innerHTML = villas.map(v => `<tr><td><strong>${v.name}</strong><br><small>${v.area}</small></td><td>${v.capacity}</td><td><strong>${v.newYear}</strong><br><small>${v.perPerson}</small></td><td>${v.facilities.slice(0,3).join('、')}</td><td>${v.note}</td></tr>`).join('');
     }
+    function loadRemoteResults() {
+      if (!sharedVotingEnabled) return;
+      const callbackName = `villaVoteResults${Date.now()}`;
+      const script = document.createElement('script');
+      const cleanup = () => { script.remove(); delete window[callbackName]; };
+      const timeout = setTimeout(() => { cleanup(); showToast('暫時無法讀取共用票數'); }, 8000);
+      window[callbackName] = (payload) => {
+        clearTimeout(timeout);
+        remoteTotals = payload && payload.ok ? (payload.totals || {}) : {};
+        cleanup();
+        renderVoteStatus();
+      };
+      script.src = `${VOTE_API_URL}?action=results&callback=${callbackName}`;
+      script.onerror = () => { clearTimeout(timeout); cleanup(); showToast('暫時無法讀取共用票數'); };
+      document.head.append(script);
+    }
+    function submitRemoteVote(villaId, action = 'vote') {
+      if (!sharedVotingEnabled) return;
+      let sink = document.querySelector('#vote-sink');
+      if (!sink) {
+        sink = document.createElement('iframe');
+        sink.id = 'vote-sink'; sink.name = 'vote-sink'; sink.hidden = true;
+        document.body.append(sink);
+      }
+      const form = document.createElement('form');
+      form.method = 'post'; form.action = VOTE_API_URL; form.target = 'vote-sink';
+      [['action', action], ['villaId', villaId], ['clientId', clientId]].forEach(([name, value]) => {
+        const input = document.createElement('input'); input.name = name; input.value = value; form.append(input);
+      });
+      document.body.append(form); form.submit(); form.remove();
+      setTimeout(loadRemoteResults, 1200);
+    }
     function renderVoteStatus() {
       const selected = villas.find(v => v.id === selectedId);
-      status.textContent = selected ? `你的首選：${selected.name}。重新選擇會取代原本的投票。` : '尚未投票。每人可選一個首選方案。';
-      rankings.innerHTML = selected ? `<span class="rank">你的第 1 名：${selected.name}</span>` : '<span class="rank">尚未產生排名</span>';
+      if (!sharedVotingEnabled) {
+        status.textContent = selected ? `你的首選：${selected.name}。此網站尚未連上共用票數。` : '尚未投票。此網站尚未連上共用票數。';
+        rankings.innerHTML = selected ? `<span class="rank">你的第 1 名：${selected.name}</span>` : '<span class="rank">尚未產生排名</span>';
+        return;
+      }
+      const ranked = villas.map(v => ({ villa: v, votes: Number(remoteTotals[v.id] || 0) }))
+        .filter(item => item.votes > 0).sort((a, b) => b.votes - a.votes || a.villa.name.localeCompare(b.villa.name, 'zh-Hant'));
+      status.textContent = selected ? `你的首選：${selected.name}。目前共 ${ranked.reduce((sum, item) => sum + item.votes, 0)} 票。` : '尚未投票；下方顯示所有人的即時票數。';
+      rankings.innerHTML = ranked.length ? ranked.map((item, index) => `<span class="rank">第 ${index + 1} 名：${item.villa.name} ${item.votes} 票</span>`).join('') : '<span class="rank">尚未產生排名</span>';
     }
-    function castVote(id) { selectedId = id; localStorage.setItem(storageKey, id); renderCards(); renderVoteStatus(); showToast('已更新你的首選'); }
-    function resetVote() { if (!selectedId || confirm('確定要清除這台裝置的投票嗎？')) { selectedId = ''; localStorage.removeItem(storageKey); renderCards(); renderVoteStatus(); showToast('已清除本機投票'); } }
+    function castVote(id) { selectedId = id; localStorage.setItem(storageKey, id); renderCards(); renderVoteStatus(); submitRemoteVote(id); showToast(sharedVotingEnabled ? '已送出共用投票' : '已更新你的首選'); }
+    function resetVote() { if (!selectedId || confirm('確定要清除這台裝置的投票嗎？')) { selectedId = ''; localStorage.removeItem(storageKey); renderCards(); renderVoteStatus(); submitRemoteVote('', 'clear'); showToast(sharedVotingEnabled ? '已清除共用投票' : '已清除本機投票'); } }
     async function copyVoteSummary() {
       const selected = villas.find(v => v.id === selectedId);
       const summary = selected ? `【台中跨年包棟投票】\n我的首選：${selected.name}\n人數／房型：${selected.capacity}\n跨年價：${selected.newYear}\n連結：${selected.url}` : '【台中跨年包棟投票】我目前尚未投票。';
@@ -142,7 +189,7 @@
     function showToast(message) { toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2400); }
     document.querySelector('#copy-vote').addEventListener('click', copyVoteSummary);
     document.querySelector('#reset-vote').addEventListener('click', resetVote);
-    renderCards(); renderComparison(); renderVoteStatus();
+    renderCards(); renderComparison(); renderVoteStatus(); loadRemoteResults();
   </script>
 </body>
 </html>
