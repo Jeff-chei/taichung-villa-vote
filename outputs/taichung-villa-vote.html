@@ -96,7 +96,7 @@
 
   <script>
     // Paste the deployed Google Apps Script /exec URL here to enable shared votes.
-    const VOTE_API_URL = '';
+    const VOTE_API_URL = 'https://script.google.com/macros/s/AKfycbxr2mL4AwK2Fd3ifaY4NgxpGq7PjYFZ56PLfEq3GYfcYk-j2ThJA-mqah2nQpk8WAQT/exec';
     const clientIdKey = 'taichung-villa-voter-id-v1';
     const clientId = localStorage.getItem(clientIdKey) || (crypto.randomUUID ? crypto.randomUUID() : `voter-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     localStorage.setItem(clientIdKey, clientId);

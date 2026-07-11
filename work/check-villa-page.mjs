@@ -15,6 +15,11 @@ for (const text of ['localStorage', 'VOTE_API_URL', 'loadRemoteResults', 'submit
   assert.ok(html.includes(text), `missing shared-vote frontend component: ${text}`);
 }
 
+assert.ok(
+  html.includes("const VOTE_API_URL = 'https://script.google.com/macros/s/AKfycbxr2mL4AwK2Fd3ifaY4NgxpGq7PjYFZ56PLfEq3GYfcYk-j2ThJA-mqah2nQpk8WAQT/exec';"),
+  'shared voting must point at the deployed Apps Script endpoint'
+);
+
 for (const text of ['function doGet', 'function doPost', 'SPREADSHEET_ID', 'clientId']) {
   assert.ok(appsScript.includes(text), `missing Apps Script backend component: ${text}`);
 }
