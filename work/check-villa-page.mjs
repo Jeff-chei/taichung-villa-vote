@@ -7,12 +7,26 @@ const appsScript = await readFile('google-apps-script/Code.gs', 'utf8');
 
 assert.ok(index.includes('taichung-villa-vote.html'), 'index page must direct visitors to the voting page');
 
+const scriptStart = html.indexOf('<script>') + '<script>'.length;
+const scriptEnd = html.lastIndexOf('</script>');
+assert.ok(scriptStart >= '<script>'.length && scriptEnd > scriptStart, 'inline script must exist');
+new Function(html.slice(scriptStart, scriptEnd));
+
 for (const text of ['starry-night', 'natural-life', 'little-cat-b', 'backyard', 'shanbao']) {
   assert.ok(html.includes(text), `missing villa data: ${text}`);
 }
 
-for (const text of ['localStorage', 'VOTE_API_URL', 'loadRemoteResults', 'submitRemoteVote']) {
+for (const text of ['localStorage', 'VOTE_API_URL', 'loadRemoteResults', 'submitRemoteVote', 'voter-name', 'villa-choice', 'voted-list', 'pending-list']) {
   assert.ok(html.includes(text), `missing shared-vote frontend component: ${text}`);
+}
+
+for (const name of ['哥布林', '小埋', '傑哥', '企鵝', '白白', 'CH', '黑熊', '叫我', '雪糕', 'yuuu', '久保']) {
+  assert.ok(html.includes(name), `missing roster member: ${name}`);
+  assert.ok(appsScript.includes(name), `Apps Script roster missing member: ${name}`);
+}
+
+for (const text of ['votedNames', 'villaIds', 'selectedVillaIds', '多選']) {
+  assert.ok(html.includes(text), `missing named multi-select frontend component: ${text}`);
 }
 
 assert.ok(
@@ -20,8 +34,8 @@ assert.ok(
   'shared voting must point at the deployed Apps Script endpoint'
 );
 
-for (const text of ['function doGet', 'function doPost', 'SPREADSHEET_ID', 'clientId']) {
+for (const text of ['function doGet', 'function doPost', 'SPREADSHEET_ID', 'ROSTER', 'NamedVotes', 'votedNames', 'villaIds']) {
   assert.ok(appsScript.includes(text), `missing Apps Script backend component: ${text}`);
 }
 
-console.log('villa page shared-vote checks passed');
+console.log('villa page named multi-select vote checks passed');
