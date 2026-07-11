@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="台中跨年包棟民宿比較與本機投票頁">
+  <title>2026 跨年包棟投票｜台中 12 人</title>
+  <style>
+    :root { --ink:#172032; --muted:#64748b; --paper:#fffdf8; --sky:#e9f5ff; --orange:#e95d2a; --orange-dark:#bd4219; --line:#dfe6ee; --card:#fff; --green:#167a67; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); font:16px/1.55 system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif; background:linear-gradient(145deg,#fff7ec 0%,#eef8ff 48%,#f4fbf8 100%); }
+    a { color:inherit; }
+    .wrap { width:min(1180px,calc(100% - 32px)); margin:auto; }
+    .hero { padding:56px 0 34px; }
+    .eyebrow { margin:0 0 10px; color:var(--orange-dark); font-weight:800; letter-spacing:.08em; }
+    h1 { max-width:780px; margin:0; font-size:clamp(2rem,6vw,4.4rem); line-height:1.08; letter-spacing:-.05em; }
+    .lead { max-width:720px; margin:18px 0 0; color:#42526a; font-size:1.08rem; }
+    .notice { margin:20px 0 0; padding:13px 16px; border:1px solid #f1c290; border-radius:14px; background:#fff6e9; color:#72421c; }
+    .vote-panel { display:grid; gap:20px; grid-template-columns:1fr; margin:16px 0 32px; padding:22px; border:1px solid #cfe5ef; border-radius:22px; background:rgba(255,255,255,.86); box-shadow:0 12px 28px rgba(49,86,113,.09); }
+    .vote-panel h2 { margin:0; font-size:1.35rem; }
+    .vote-panel p { margin:5px 0 0; color:var(--muted); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    button { appearance:none; border:0; border-radius:10px; padding:10px 14px; color:white; background:var(--orange); font:inherit; font-weight:750; cursor:pointer; }
+    button:hover { background:var(--orange-dark); }
+    button.secondary { color:var(--ink); background:#eaf0f5; }
+    button.secondary:hover { background:#dce6ed; }
+    .rankings { display:flex; flex-wrap:wrap; gap:8px; min-height:32px; align-items:center; }
+    .rank { padding:5px 10px; border-radius:999px; background:#edf8f5; color:var(--green); font-size:.9rem; font-weight:700; }
+    .section-title { display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin:36px 0 14px; }
+    h2 { margin:0; font-size:1.55rem; letter-spacing:-.03em; }
+    .count { color:var(--muted); font-size:.92rem; }
+    .cards { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); }
+    .card { position:relative; display:flex; flex-direction:column; padding:20px; min-height:354px; border:1px solid var(--line); border-radius:20px; background:var(--card); box-shadow:0 8px 22px rgba(37,61,87,.07); transition:transform .2s,box-shadow .2s,border-color .2s; }
+    .card:hover { transform:translateY(-3px); box-shadow:0 15px 30px rgba(37,61,87,.12); }
+    .card.selected { border:2px solid var(--orange); background:#fffaf4; }
+    .badge { display:inline-flex; width:max-content; padding:4px 9px; border-radius:999px; background:#eaf5ff; color:#0a5e99; font-size:.8rem; font-weight:800; }
+    .card h3 { margin:13px 0 4px; font-size:1.25rem; line-height:1.25; }
+    .location { margin:0; color:var(--muted); font-size:.92rem; }
+    .price { margin:17px 0 5px; color:var(--orange-dark); font-size:1.15rem; font-weight:850; }
+    .per-person { margin:0; color:var(--muted); font-size:.88rem; }
+    .tags { display:flex; flex-wrap:wrap; gap:7px; margin:16px 0; }
+    .tag { padding:4px 8px; border:1px solid #d6e8df; border-radius:7px; background:#f3fbf7; color:#286454; font-size:.82rem; }
+    .card-footer { display:flex; flex-wrap:wrap; gap:9px; margin-top:auto; }
+    .link { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:8px 11px; border:1px solid #b8c9d7; border-radius:10px; color:#244158; text-decoration:none; font-weight:750; font-size:.9rem; }
+    .link:hover { border-color:#638197; background:#f4faff; }
+    .vote-btn { flex:1; min-width:105px; }
+    .table-scroll { overflow-x:auto; border:1px solid var(--line); border-radius:16px; background:white; }
+    table { width:100%; min-width:850px; border-collapse:collapse; font-size:.93rem; }
+    th,td { padding:14px 16px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+    th { background:#f1f8fc; color:#345067; font-size:.85rem; }
+    tr:last-child td { border-bottom:0; }
+    .fineprint { margin:18px 0 56px; color:var(--muted); font-size:.88rem; }
+    .toast { position:fixed; left:50%; bottom:22px; z-index:5; transform:translate(-50%,110px); padding:11px 15px; border-radius:999px; background:#172032; color:white; box-shadow:0 8px 20px rgba(0,0,0,.22); transition:transform .22s; }
+    .toast.show { transform:translate(-50%,0); }
+    @media (min-width:760px) { .vote-panel { grid-template-columns:1fr auto; align-items:center; } .hero { padding-top:78px; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <p class="eyebrow">NEW YEAR’S EVE · TAICHUNG</p>
+      <h1>跨年包棟，<br>12 人怎麼選？</h1>
+      <p class="lead">KTV、麻將、烤肉是基本配備。這份小表把目前找到的台中包棟方案整理在一起，讓大家先看清資訊、再各自投出偏好。</p>
+      <p class="notice">投票只存在你目前使用的瀏覽器，不會同步給其他人。投完請按「複製我的投票結果」貼到群組，方便主揪統計。</p>
+    </header>
+
+    <section class="vote-panel" aria-labelledby="vote-title">
+      <div>
+        <h2 id="vote-title">本機投票</h2>
+        <p id="vote-status">尚未投票。每人可選一個首選方案。</p>
+        <div class="rankings" id="rankings" aria-live="polite"></div>
+      </div>
+      <div class="actions">
+        <button type="button" id="copy-vote">複製我的投票結果</button>
+        <button type="button" id="reset-vote" class="secondary">重設我的投票</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="cards-title">
+      <div class="section-title"><h2 id="cards-title">候選方案</h2><span class="count">6 個方案 · 12/31 入住一晚</span></div>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <section aria-labelledby="compare-title">
+      <div class="section-title"><h2 id="compare-title">快速比較</h2><span class="count">未公開跨年價格一律標示待詢問</span></div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>方案</th><th>房型／人數</th><th>跨年價</th><th>娛樂與烤肉</th><th>重點</th></tr></thead>
+          <tbody id="comparison"></tbody>
+        </table>
+      </div>
+    </section>
+    <p class="fineprint">資料依各民宿官方頁、訂房頁或公開介紹整理。跨年前請再向業者確認：是否有房、總價是否含清潔費／加床、KTV 可使用時間、麻將桌類型，以及烤肉器材與燃料。</p>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const villas = [
+      { id:'starry-night', name:'大雪星空 Starry Night', area:'東勢', capacity:'10–18 人／5 房', newYear:'$36,000／棟（10–18 人同價）', perPerson:'12 人約 $3,000／人', facilities:['KTV','麻將桌','獨立烤肉區','室內＋戶外廚房','甕仔雞桶','桌遊'], note:'配備完整，12 人不必加人費；適合想認真烤肉、下廚的團。', fit:'12 人剛好', url:'https://www.starrynightoutdoor.com/inn', label:'官方介紹' },
+      { id:'natural-life', name:'漫漫石山 Natural Life', area:'東勢', capacity:'14 人／3 房（4＋4＋6）', newYear:'需向業者確認', perPerson:'一般平日 $12,000 起；假日 $16,000', facilities:['行動 KTV','電動麻將桌','露天烤肉區','開放式廚房','夏季戲水池'], note:'一次只接一組；若跨年報價合理，可能是預算優先的選項。', fit:'預算待確認', url:'https://www.natural-life.com.tw/', label:'官方網站' },
+      { id:'little-cat-b', name:'小小喵的天空 B 棟', area:'東勢', capacity:'13 人／4 房（可加 2 床）', newYear:'$24,000／棟', perPerson:'12 人約 $2,000／人', facilities:['KTV','電動麻將桌','烤肉架','廚房','大露台'], note:'四房、兩衛浴，容量最貼近 12 人；設備與預算平衡。', fit:'12 人優先', url:'https://littlecatsky.com/room/', label:'房型介紹' },
+      { id:'little-cat-a', name:'小小喵的天空 A 棟', area:'東勢', capacity:'15 人／3 房', newYear:'$26,000／棟', perPerson:'12 人約 $2,167／人', facilities:['KTV','電動麻將桌','烤肉架','廚房','大露台'], note:'若人數有機會增加到 13–15 人，可選空間更大的 A 棟。', fit:'人數可增加', url:'https://littlecatsky.com/room/', label:'房型介紹' },
+      { id:'backyard', name:'小后院 Houli Backyard', area:'后里', capacity:'5 房；人數上限待確認', newYear:'需向業者確認', perPerson:'跨年與人數方案待詢問', facilities:['KTV','麻將','烤肉','1200 坪園區','寵物友善'], note:'靠近麗寶、戶外空間大，適合想在草地與園區活動的團體。', fit:'戶外活動派', url:'https://www.booking-owlnest.com/houlibackyard?lang=zh_TW', label:'訂房頁' },
+      { id:'shanbao', name:'山中有個寶', area:'東勢', capacity:'房型／人數上限待確認', newYear:'需向業者確認', perPerson:'跨年與人數方案待詢問', facilities:['KTV','電動麻將','戶外 BBQ','山景','獨棟空間'], note:'偏山景獨棟 Villa 風格，適合重視私密感與自然景觀。', fit:'山景私密派', url:'https://www.booking-owlnest.com/shanbao?lang=zh_TW', label:'訂房頁', extraUrl:'https://shan-bao.weebly.com/22290208392987222659.html', extraLabel:'環境介紹' }
+    ];
+    const storageKey = 'taichung-villa-vote-v1';
+    let selectedId = localStorage.getItem(storageKey) || '';
+    const cards = document.querySelector('#cards');
+    const comparison = document.querySelector('#comparison');
+    const status = document.querySelector('#vote-status');
+    const rankings = document.querySelector('#rankings');
+    const toast = document.querySelector('#toast');
+
+    const escapeHtml = (value) => value.replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+    function linkMarkup(villa) { return `<a class="link" href="${villa.url}" target="_blank" rel="noreferrer">${villa.label} ↗</a>${villa.extraUrl ? `<a class="link" href="${villa.extraUrl}" target="_blank" rel="noreferrer">${villa.extraLabel} ↗</a>` : ''}`; }
+    function renderCards() {
+      cards.innerHTML = villas.map(v => `<article class="card ${selectedId === v.id ? 'selected' : ''}">
+        <span class="badge">${v.fit}</span><h3>${v.name}</h3><p class="location">${v.area} · ${v.capacity}</p>
+        <p class="price">${v.newYear}</p><p class="per-person">${v.perPerson}</p>
+        <div class="tags">${v.facilities.map(item => `<span class="tag">${item}</span>`).join('')}</div>
+        <p class="location">${v.note}</p>
+        <div class="card-footer">${linkMarkup(v)}<button class="vote-btn" type="button" data-vote="${v.id}">${selectedId === v.id ? '✓ 已投票' : '投給這間'}</button></div>
+      </article>`).join('');
+      document.querySelectorAll('[data-vote]').forEach(button => button.addEventListener('click', () => castVote(button.dataset.vote)));
+    }
+    function renderComparison() {
+      comparison.innerHTML = villas.map(v => `<tr><td><strong>${v.name}</strong><br><small>${v.area}</small></td><td>${v.capacity}</td><td><strong>${v.newYear}</strong><br><small>${v.perPerson}</small></td><td>${v.facilities.slice(0,3).join('、')}</td><td>${v.note}</td></tr>`).join('');
+    }
+    function renderVoteStatus() {
+      const selected = villas.find(v => v.id === selectedId);
+      status.textContent = selected ? `你的首選：${selected.name}。重新選擇會取代原本的投票。` : '尚未投票。每人可選一個首選方案。';
+      rankings.innerHTML = selected ? `<span class="rank">你的第 1 名：${selected.name}</span>` : '<span class="rank">尚未產生排名</span>';
+    }
+    function castVote(id) { selectedId = id; localStorage.setItem(storageKey, id); renderCards(); renderVoteStatus(); showToast('已更新你的首選'); }
+    function resetVote() { if (!selectedId || confirm('確定要清除這台裝置的投票嗎？')) { selectedId = ''; localStorage.removeItem(storageKey); renderCards(); renderVoteStatus(); showToast('已清除本機投票'); } }
+    async function copyVoteSummary() {
+      const selected = villas.find(v => v.id === selectedId);
+      const summary = selected ? `【台中跨年包棟投票】\n我的首選：${selected.name}\n人數／房型：${selected.capacity}\n跨年價：${selected.newYear}\n連結：${selected.url}` : '【台中跨年包棟投票】我目前尚未投票。';
+      try { await navigator.clipboard.writeText(summary); showToast('投票摘要已複製，可貼到群組'); }
+      catch { window.prompt('請複製以下文字：', summary); }
+    }
+    function showToast(message) { toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2400); }
+    document.querySelector('#copy-vote').addEventListener('click', copyVoteSummary);
+    document.querySelector('#reset-vote').addEventListener('click', resetVote);
+    renderCards(); renderComparison(); renderVoteStatus();
+  </script>
+</body>
+</html>
