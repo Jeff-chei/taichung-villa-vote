@@ -16,6 +16,10 @@ for (const text of ['starry-night', 'natural-life', 'little-cat-b', 'backyard', 
   assert.ok(html.includes(text), `missing villa data: ${text}`);
 }
 
+assert.ok(html.includes("name:'后里 Backyard（已被訂走）'"), 'Houli Backyard must be marked as booked');
+assert.ok(html.includes("newYear:'$42,000'"), 'Shanbao must show the updated 42000 price');
+assert.ok(html.includes("'德州撲克'"), 'Shanbao must include Texas poker as a facility tag');
+
 for (const text of ['localStorage', 'VOTE_API_URL', 'loadRemoteResults', 'submitRemoteVote', 'voter-name', 'villa-choice', 'voted-list', 'pending-list']) {
   assert.ok(html.includes(text), `missing shared-vote frontend component: ${text}`);
 }
