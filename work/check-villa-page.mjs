@@ -21,8 +21,10 @@ assert.match(html, /grid-template-columns:\s*minmax\(0,\s*4fr\)\s+minmax\(/, 'de
 assert.match(html, /@media\s*\(max-width:\s*1040px\)[\s\S]*grid-template-columns:\s*1fr/, 'narrow screens must stack into one column');
 assert.ok(html.includes("{ name: '白白', paid: true }"), '白白 must be recorded as paid');
 assert.ok(html.includes("{ name: '叫我', paid: true }"), '叫我 must be recorded as paid');
-assert.equal((html.match(/paid: true/g) || []).length, 2, 'exactly two members must be marked paid');
-assert.equal((html.match(/paid: false/g) || []).length, 9, 'the other nine members must remain unpaid');
+assert.ok(html.includes("{ name: '黑熊', amount: 6000, paid: true }"), '黑熊 must be recorded as paid 6000');
+assert.equal((html.match(/paid: true/g) || []).length, 3, 'exactly three members must be marked paid');
+assert.equal((html.match(/paid: false/g) || []).length, 8, 'the other eight members must remain unpaid');
+assert.ok(html.includes('paid.reduce((total,person)=>total+amountFor(person),0)'), 'summary must total actual paid amounts');
 for (const text of ['rank:1, votes:9', 'rank:2, votes:5', 'rank:3, votes:4', 'rank:4, votes:4', 'rank:5, votes:3', 'rank:6, votes:1', '第 ${villa.rank} 名 · ${villa.votes} 票']) {
   assert.ok(html.includes(text), `missing vote ranking: ${text}`);
 }
