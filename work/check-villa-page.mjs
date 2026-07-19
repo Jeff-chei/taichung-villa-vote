@@ -19,5 +19,11 @@ assert.ok(html.includes("price:'跨年 $42,000'"), 'Shanbao must keep the update
 assert.ok(html.includes("'德州撲克'"), 'Shanbao must include Texas poker');
 assert.match(html, /grid-template-columns:\s*minmax\(0,\s*4fr\)\s+minmax\(/, 'desktop layout must use a 4:1 grid');
 assert.match(html, /@media\s*\(max-width:\s*1040px\)[\s\S]*grid-template-columns:\s*1fr/, 'narrow screens must stack into one column');
-assert.equal((html.match(/paid: false/g) || []).length, 11, 'all 11 members must initially be marked unpaid');
+assert.ok(html.includes("{ name: '白白', paid: true }"), '白白 must be recorded as paid');
+assert.ok(html.includes("{ name: '叫我', paid: true }"), '叫我 must be recorded as paid');
+assert.equal((html.match(/paid: true/g) || []).length, 2, 'exactly two members must be marked paid');
+assert.equal((html.match(/paid: false/g) || []).length, 9, 'the other nine members must remain unpaid');
+for (const text of ['rank:1, votes:9', 'rank:2, votes:5', 'rank:3, votes:4', 'rank:4, votes:4', 'rank:5, votes:3', 'rank:6, votes:1', '第 ${villa.rank} 名 · ${villa.votes} 票']) {
+  assert.ok(html.includes(text), `missing vote ranking: ${text}`);
+}
 console.log('villa page result and payment-progress checks passed');
