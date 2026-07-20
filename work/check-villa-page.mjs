@@ -22,11 +22,11 @@ assert.match(html, /@media\s*\(max-width:\s*1040px\)[\s\S]*grid-template-columns
 assert.ok(html.includes("{ name: '白白', paid: true }"), '白白 must be recorded as paid');
 assert.ok(html.includes("{ name: '叫我', paid: true }"), '叫我 must be recorded as paid');
 assert.ok(html.includes("{ name: '黑熊', amount: 6000, paid: true }"), '黑熊 must be recorded as paid 6000');
-for (const name of ['CH', 'yuuu', '雪糕', '傑哥', '小埋', '久保']) {
+for (const name of ['哥布林', '小埋', '傑哥', '企鵝', '白白', 'CH', '叫我', '雪糕', 'yuuu', '久保']) {
   assert.ok(html.includes(`{ name: '${name}', paid: true }`), `${name} must be recorded as paid`);
 }
-assert.equal((html.match(/paid: true/g) || []).length, 9, 'exactly nine members must be marked paid');
-assert.equal((html.match(/paid: false/g) || []).length, 2, 'the other two members must remain unpaid');
+assert.equal((html.match(/paid: true/g) || []).length, 11, 'all eleven members must be marked paid');
+assert.equal((html.match(/paid: false/g) || []).length, 0, 'no members may remain unpaid');
 assert.ok(html.includes('paid.reduce((total,person)=>total+amountFor(person),0)'), 'summary must total actual paid amounts');
 for (const text of ['rank:1, votes:9', 'rank:2, votes:5', 'rank:3, votes:4', 'rank:4, votes:4', 'rank:5, votes:3', 'rank:6, votes:1', '第 ${villa.rank} 名 · ${villa.votes} 票']) {
   assert.ok(html.includes(text), `missing vote ranking: ${text}`);
