@@ -22,7 +22,11 @@ assert.match(html, /@media\s*\(max-width:\s*1040px\)[\s\S]*grid-template-columns
 assert.ok(html.includes("{ name: '白白', paid: true }"), '白白 must be recorded as paid');
 assert.ok(html.includes("{ name: '叫我', paid: true }"), '叫我 must be recorded as paid');
 assert.ok(html.includes("{ name: '黑熊', amount: 6000, paid: true }"), '黑熊 must be recorded as paid 6000');
-for (const name of ['哥布林', '小埋', '傑哥', '企鵝', '白白', 'CH', '叫我', '雪糕', 'yuuu', '久保']) {
+for (const text of ["{ name: '哥布林', note: '小埋墊', paid: true }", "{ name: '企鵝', note: '小埋墊', paid: true }", "{ name: '傑哥', note: '叫我墊', paid: true }", "{ name: '久保', note: '叫我墊', paid: true }"]) {
+  assert.ok(html.includes(text), `missing payment note: ${text}`);
+}
+assert.ok(html.includes('payer-note'), 'payment notes must render below the payer name');
+for (const name of ['小埋', '白白', 'CH', '叫我', '雪糕', 'yuuu']) {
   assert.ok(html.includes(`{ name: '${name}', paid: true }`), `${name} must be recorded as paid`);
 }
 assert.equal((html.match(/paid: true/g) || []).length, 11, 'all eleven members must be marked paid');
